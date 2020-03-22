@@ -41,4 +41,4 @@ jobs:
       - run: php artisan db:seed --force
       - run:
           name: Run Application Tests
-          command: ./vendor/bin/phpunit --testsuite Feature
+          command: ./vendor/phpunit/phpunit/phpunit
