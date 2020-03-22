@@ -15,8 +15,7 @@ jobs:
       - run:
           name: Setup Environment
           command: |
-            cp .env.testing .env && sudo apt update
-            && sudo apt install zlib1g-dev \
+            cp .env.testing .env && sudo apt update && sudo apt install zlib1g-dev \
             libsqlite3-dev \
             docker-php-ext-install \
             zip \
@@ -38,8 +37,8 @@ jobs:
       - run:
           name: Running Tests
           command: |
-            composer dump-autoload \
-            php artisan key:generate \
-            php artisan migrate --force \
-            php artisan db:seed --force \
+            composer dump-autoload &&
+            php artisan key:generate &&
+            php artisan migrate --force &&
+            php artisan db:seed --force &&
             ./vendor/phpunit/phpunit/phpunit
