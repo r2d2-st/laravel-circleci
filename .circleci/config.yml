@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup Environment
+          name: Install required libraries and extensions
           command: |
             cp .env.testing .env
       - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
