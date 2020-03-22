@@ -15,6 +15,6 @@ class FailATest extends TestCase
      */
     public function create()
     {
-        $this->assertEquals(1,2);
+        $this->assertEquals(1,1);
     }
 }

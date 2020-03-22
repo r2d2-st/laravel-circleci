@@ -12,10 +12,7 @@ jobs:
           MYSQL_DATABASE: testing_db
     steps:
       - checkout
-      - run:
-          name: Install required libraries and extensions
-          command: |
-            cp .env.testing .env
+      - run: cp .env.testing .env
       - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
       - run: sudo docker-php-ext-install zip
       - run: sudo -E docker-php-ext-install pdo pdo_mysql
