@@ -13,16 +13,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup Environment
+          name: Install required libraries and extensions
           command: |
-            cp .env.testing .env && sudo apt update && sudo apt install zlib1g-dev \
+            cp .env.testing .env && sudo apt update && sudo apt install -y zlib1g-dev \
             libsqlite3-dev \
             docker-php-ext-install \
             zip \
-            -E docker-php-ext-install \
+            docker-php-ext-install \
             pdo \
             pdo_mysql \
-            -y mysql-client
+            mysql-client
 
       # composer cache
       - restore_cache:
@@ -35,7 +35,7 @@ jobs:
           paths:
             - vendor
       - run:
-          name: Running Tests
+          name: Prepare the database and Run tests
           command: |
             composer dump-autoload &&
             php artisan key:generate &&
