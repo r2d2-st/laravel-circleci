@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Setup required extensions and libraries
           command: |
-            cp .env.testing .env.testing_1;
+            cp .env.testing .env;
             sudo apt update && sudo apt install -y mysql-client zlib1g-dev libsqlite3-dev;
             sudo docker-php-ext-install zip pdo pdo_mysql
 
@@ -30,7 +30,10 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "composer.json" }}
             - v1-dependencies-
-      - run: composer install -n --prefer-dist
+      - run:
+          name: Composer Install
+          command: |
+            composer install -n --prefer-dist
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
