@@ -67,16 +67,6 @@ workflows:
   version: 2
   main:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - build-staging:
-          filters:
-            branches:
-              only: staging
       - test:
           requires:
             - build
@@ -88,6 +78,16 @@ workflows:
       - test-staging:
           requires:
             - build-staging
+          filters:
+            branches:
+              only: staging
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - build-staging:
           filters:
             branches:
               only: staging
