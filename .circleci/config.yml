@@ -1,20 +1,6 @@
 version: 2.1
 jobs:
 
-  build:
-    docker:
-      - image: circleci/python
-    steps:
-      - checkout
-      - run: echo "Running production env"
-
-  build-staging:
-    docker:
-      - image: circleci/python
-    steps:
-      - checkout
-      - run: echo "Running staging env"
-
   # this should run for both env, it shouldn't matter, but it any case the jobs can become separate
   test-staging:
     docker:
@@ -62,6 +48,20 @@ jobs:
     steps:
       - checkout
       - run: echo "Implement testing for production"
+
+  build:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run: echo "Running production env"
+
+  build-staging:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run: echo "Running staging env"
 
 workflows:
   version: 2
