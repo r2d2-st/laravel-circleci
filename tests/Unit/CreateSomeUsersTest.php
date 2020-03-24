@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -15,7 +16,6 @@ class CreateSomeUsersTest extends TestCase
      */
     public function create()
     {
-
         foreach (range(0,10) as $i) {
             $user = User::create([
                 'name' => "user_{$i}",
@@ -27,5 +27,10 @@ class CreateSomeUsersTest extends TestCase
 
             $this->assertInstanceOf(User::class, $user);
         }
+
+        dump("Created a bunch of users...");
+        dump(User::all()->toArray());
+        dump((new User())->getTable());
+        dump(DB::connection()->getDatabaseName());
     }
 }
