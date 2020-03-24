@@ -12,30 +12,43 @@ jobs:
           MYSQL_DATABASE: testing_db
     steps:
       - checkout
-      - run: cp .env.testing .env
-      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
-      - run: sudo -E docker-php-ext-install pdo pdo_mysql
-      #  - run: sudo -E docker-php-ext-install bcmath && sudo docker-php-ext-enable bcmath
-      - run: sudo apt install -y mysql-client
+#      - run: cp .env.testing .env
+#      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
+#      - run: sudo docker-php-ext-install zip
+#      - run: sudo -E docker-php-ext-install pdo pdo_mysql
+#      #  - run: sudo -E docker-php-ext-install bcmath && sudo docker-php-ext-enable bcmath
+#      - run: sudo apt install -y mysql-client
+      - run:
+          name: Setup required extensions and libraries
+          command: |
+            cp .env.testing .env.testing_1;
+            sudo apt update && sudo apt install -y mysql-client zlib1g-dev libsqlite3-dev;
+            sudo docker-php-ext-install zip -E pdo pdo_mysql
 
       # composer cache
       - restore_cache:
           keys:
-            # "composer.lock" can be used if it is committed to the repo
             - v1-dependencies-{{ checksum "composer.json" }}
-            # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run: composer install -n --prefer-dist
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-      - run: composer dump-autoload
-      # prepare the database
-      - run: php artisan key:generate
-      - run: php artisan migrate --force
-      - run: php artisan db:seed --force
+#      - run: composer dump-autoload
+#      # prepare the database
+#      - run: php artisan key:generate
+#      - run: php artisan migrate --force
+#      - run: php artisan db:seed --force
+#      - run:
+#          name: Run Application Tests
+#          command: ./vendor/bin/phpunit
+
       - run:
-          name: Run Application Tests
-          command: ./vendor/bin/phpunit
+          name: "Setup laravel database and run phpunit tests"
+          command: |
+            composer dump-autoload;
+            php artisan key:generate;
+            php artisan migrate --force;
+            php artisan db:seed --force;
+            ./vendor/bin/phpunit
