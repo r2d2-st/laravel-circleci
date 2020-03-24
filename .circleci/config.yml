@@ -1,5 +1,6 @@
 version: 2.1
 jobs:
+
   build:
     docker:
       - image: circleci/python
@@ -64,6 +65,16 @@ workflows:
   version: 2
   main:
     jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - build-staging:
+          filters:
+            branches:
+              only: staging
       - test:
           requires:
             - build
