@@ -1,8 +1,16 @@
 version: 2.1
 jobs:
   build:
+    steps:
+      run: echo "I am a production build"
+
+  build-staging:
+    steps:
+      run: echo "I am a staging build"
+
+# this should run for both env, it shouldn't matter, but it any case the jobs can become separate
+  test-staging:
     docker:
-      # Specify the version you desire here
       - image: circleci/php:7.3.3-fpm-node
       - image: circleci/mysql:8.0-ram
         command: [--default-authentication-plugin=mysql_native_password]
@@ -12,20 +20,12 @@ jobs:
           MYSQL_DATABASE: testing_db
     steps:
       - checkout
-#      - run: cp .env.testing .env
-#      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
-#      - run: sudo docker-php-ext-install zip
-#      - run: sudo -E docker-php-ext-install pdo pdo_mysql
-#      #  - run: sudo -E docker-php-ext-install bcmath && sudo docker-php-ext-enable bcmath
-#      - run: sudo apt install -y mysql-client
       - run:
           name: Setup required extensions and libraries
           command: |
             cp .env.testing .env;
             sudo apt update && sudo apt install -y mysql-client zlib1g-dev libsqlite3-dev;
             sudo docker-php-ext-install zip pdo pdo_mysql
-
-      # composer cache
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "composer.json" }}
@@ -38,15 +38,6 @@ jobs:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-#      - run: composer dump-autoload
-#      # prepare the database
-#      - run: php artisan key:generate
-#      - run: php artisan migrate --force
-#      - run: php artisan db:seed --force
-#      - run:
-#          name: Run Application Tests
-#          command: ./vendor/bin/phpunit
-
       - run:
           name: "Setup laravel database and run phpunit tests"
           command: |
@@ -55,3 +46,22 @@ jobs:
             php artisan migrate --force;
             php artisan db:seed --force;
             ./vendor/bin/phpunit
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - test:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - test-staging:
+          requires:
+            - build-staging
+          filters:
+            branches:
+              only: staging
