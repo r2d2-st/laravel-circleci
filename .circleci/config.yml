@@ -23,7 +23,7 @@ jobs:
           command: |
             cp .env.testing .env.testing_1;
             sudo apt update && sudo apt install -y mysql-client zlib1g-dev libsqlite3-dev;
-            sudo docker-php-ext-install zip -E pdo pdo_mysql
+            sudo docker-php-ext-install zip pdo pdo_mysql
 
       # composer cache
       - restore_cache:
