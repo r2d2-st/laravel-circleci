@@ -53,6 +53,13 @@ jobs:
             php artisan db:seed --force;
             ./vendor/bin/phpunit
 
+  test:
+    docker:
+      - image: circleci/php:7.3.3-fpm-node
+    steps:
+      - checkout
+      - run: echo "Implement testing for production"
+
 workflows:
   version: 2
   main:
